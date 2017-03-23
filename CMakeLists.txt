@@ -33,7 +33,7 @@ set(HEADER_DIR ${CMAKE_CURRENT_SOURCE_DIR}/include)
 file(GLOB_RECURSE SOURCE_FILES ${SOURCE_DIR}/*.cpp)
 
 add_executable(tinydm ${SOURCE_FILES})
+target_link_libraries(tinydm curl pthread ${CURL_LIBRARIES})
 target_include_directories(tinydm PRIVATE ${HEADER_DIR})
-target_link_libraries(tinydm ${CURL_LIBRARIES})
 
 set_property(TARGET tinydm PROPERTY CXX_STANDARD 14)
