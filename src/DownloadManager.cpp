@@ -51,4 +51,4 @@ void DownloadManager::download(std::string url) {
   _urls.push(std::move(url));
   _condition.notify_one();
 }
-}
+}  // namespace tinydm

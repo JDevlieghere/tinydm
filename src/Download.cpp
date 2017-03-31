@@ -4,10 +4,22 @@
 #include <curl/curlbuild.h>
 #include <curl/easy.h>
 
+#include <sys/stat.h>
+
 #include <algorithm>
 #include <fstream>
 #include <iostream>
 #include <vector>
+
+namespace {
+bool exists(const std::string &filename) {
+  struct stat buf;
+  if (stat(filename.c_str(), &buf) != -1) {
+    return true;
+  }
+  return false;
+}
+}
 
 namespace tinydm {
 
@@ -17,6 +29,11 @@ Download::~Download() { curl_easy_cleanup(_curl); }
 
 std::pair<bool, std::string> Download::download(const std::string &url) {
   const std::string filename = get_filename(url);
+
+  if (exists(filename)) {
+    return {false, filename + ": file already exists"};
+  }
+
   std::ofstream out(filename, std::ios::binary);
 
   curl_easy_setopt(_curl, CURLOPT_URL, url.c_str());
@@ -63,9 +80,9 @@ std::string Download::unescape(const std::string &url) {
 
 std::size_t Download::write_callback(char *ptr, std::size_t size,
                                      std::size_t nmemb, void *data) {
-  std::ofstream *out = static_cast<std::ofstream *>(data);
+  auto out = static_cast<std::ofstream *>(data);
   std::size_t nbytes = size * nmemb;
   out->write(ptr, nbytes);
   return nbytes;
 }
-}
+}  // namespace tinydm
