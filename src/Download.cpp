@@ -7,6 +7,7 @@
 #include <sys/stat.h>
 
 #include <algorithm>
+#include <cstdio>
 #include <fstream>
 #include <iostream>
 #include <vector>
@@ -39,12 +40,19 @@ std::pair<bool, std::string> Download::download(const std::string &url) {
   curl_easy_setopt(_curl, CURLOPT_URL, url.c_str());
   curl_easy_setopt(_curl, CURLOPT_FOLLOWLOCATION, 1L);
   curl_easy_setopt(_curl, CURLOPT_NOSIGNAL, 0);
+
   curl_easy_setopt(_curl, CURLOPT_WRITEFUNCTION, write_callback);
   curl_easy_setopt(_curl, CURLOPT_WRITEDATA, &out);
+
+  // Abort downloads when speed remains below 1024 bytes/sec for more than 30
+  // seconds.
+  curl_easy_setopt(_curl, CURLOPT_LOW_SPEED_LIMIT, 1024);
+  curl_easy_setopt(_curl, CURLOPT_LOW_SPEED_TIME, 30);
 
   CURLcode res = curl_easy_perform(_curl);
 
   if (res != CURLE_OK) {
+    std::remove(filename.c_str());
     return {false, filename + ": " + std::string(curl_easy_strerror(res))};
   }
 
