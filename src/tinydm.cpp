@@ -13,7 +13,7 @@ int main(int argc, char **argv) {
   }
 
   int threads = std::atoi(argv[1]);
-  if (threads == 0) {
+  if (threads <= 0) {
     std::cerr << "Invalid number of threads specified" << std::endl;
     return EXIT_FAILURE;
   }
