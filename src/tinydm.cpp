@@ -18,7 +18,8 @@ int main(int argc, char **argv) {
     return EXIT_FAILURE;
   }
 
-  DownloadManager dm(threads);
+  DownloadManager dm(static_cast<std::size_t>(threads));
+
   std::string line;
   while (std::getline(std::cin, line)) {
     if (line.empty()) break;

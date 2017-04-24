@@ -17,6 +17,8 @@ else(SANITIZE)
   message(STATUS "Building without sanitizers")
 endif(SANITIZE)
 
+set(CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG} -Weverything -Wno-c++98-compat -Wno-c++98-compat-pedantic -Wno-unused-macros -Wno-newline-eof -Wno-exit-time-destructors -Wno-global-constructors -Wno-gnu-zero-variadic-macro-arguments -Wno-documentation -Wno-shadow -Wno-missing-prototypes -Wno-disabled-macro-expansion -Wno-padded")
+
 # TinyDM Target
 set(SOURCE_DIR ${CMAKE_CURRENT_SOURCE_DIR}/src)
 set(HEADER_DIR ${CMAKE_CURRENT_SOURCE_DIR}/include)

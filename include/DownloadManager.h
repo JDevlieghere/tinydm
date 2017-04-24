@@ -18,12 +18,14 @@ class DownloadManager {
 
  private:
   std::queue<std::string> _urls;
+
   std::vector<std::thread> _workers;
   std::vector<Download*> _downloads;
 
-  bool _stop;
   std::mutex _mutex;
   std::mutex _io_mutex;
   std::condition_variable _condition;
+
+  bool _stop;
 };
 }

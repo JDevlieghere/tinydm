@@ -79,9 +79,9 @@ std::string Download::get_filename(std::string url) {
 
 std::string Download::unescape(const std::string &url) {
   int length;
-  char *unescaped =
-      curl_easy_unescape(_curl, url.c_str(), url.length(), &length);
-  const std::string str(unescaped, length);
+  char *unescaped = curl_easy_unescape(_curl, url.c_str(),
+                                       static_cast<int>(url.length()), &length);
+  const std::string str(unescaped, static_cast<std::size_t>(length));
   curl_free(unescaped);
   return str;
 }
@@ -90,7 +90,7 @@ std::size_t Download::write_callback(char *ptr, std::size_t size,
                                      std::size_t nmemb, void *data) {
   auto out = static_cast<std::ofstream *>(data);
   std::size_t nbytes = size * nmemb;
-  out->write(ptr, nbytes);
+  out->write(ptr, static_cast<std::streamsize>(nbytes));
   return nbytes;
 }
 }  // namespace tinydm
