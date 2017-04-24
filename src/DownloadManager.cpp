@@ -28,9 +28,9 @@ DownloadManager::DownloadManager(std::size_t threads) : _stop(false) {
         {
           std::unique_lock<std::mutex> lock(this->_io_mutex);
           if (success) {
-            std::cout << "Finished downloading " << result << std::endl;
+            std::cout << "--- Finished downloading " << result << std::endl;
           } else {
-            std::cerr << "Failed to download " << result << std::endl;
+            std::cerr << "--- Failed to download " << result << std::endl;
           }
         }
       }
@@ -43,7 +43,14 @@ DownloadManager::~DownloadManager() {
     std::unique_lock<std::mutex> lock(_mutex);
     _stop = true;
   }
+
   _condition.notify_all();
+
+  {
+    std::unique_lock<std::mutex> lock(this->_io_mutex);
+    std::cout << "--- Exiting when all downloading are complete" << std::endl;
+  }
+
   for (std::thread& worker : _workers) worker.join();
 }
 
